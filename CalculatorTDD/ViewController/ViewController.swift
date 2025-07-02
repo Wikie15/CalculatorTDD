@@ -50,7 +50,7 @@ class ViewController: UIViewController {
         stringInputField.becomeFirstResponder()
         stringInputField.font = UIFont(name: "Digital-7", size: 30)
         resultLabel.font = UIFont(name: "Digital-7", size: 30)
-        selectedOperatorLabel.font = UIFont(name: "Digital-7", size: 20)
+        selectedOperatorLabel.font = UIFont(name: "Digital-7", size: 30)
         self.negativeSwitch.isOn = defaultsHelper.isNegativeNumberEnabled() ?? false
         self.negativeSwitch.addTarget(self, action: #selector(setNegativeSwitch), for: .valueChanged)
         
@@ -77,7 +77,7 @@ class ViewController: UIViewController {
     
     @IBAction func changeTag(_ sender: UIButton) {
         self.tag = sender.tag
-        self.selectedOperatorLabel.text = "\(self.tag)"
+        self.selectedOperatorLabel.text = self.tag == 1 ? "+" : "-"
     }
     
     @IBAction func resetButtonAction(_ sender: UIButton) {
