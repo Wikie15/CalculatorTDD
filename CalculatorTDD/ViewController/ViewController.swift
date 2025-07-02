@@ -99,6 +99,7 @@ extension ViewController
     //MARK: BASIC UI AND METHOD SETUP
     func setUIAndMethod()
     {
+        // we can create custom button or view by creating custom class and use that in Interface Builder or storybaord. I chose to go as simplfied  version of using modifiers here.
         holderView.layer.cornerRadius = 10
         topView.layer.cornerRadius = 10
         
