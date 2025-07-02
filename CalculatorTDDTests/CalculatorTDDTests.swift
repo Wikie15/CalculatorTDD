@@ -14,85 +14,68 @@ final class CalculatorTDDTests: XCTestCase {
 
     
     var viewController : ViewController!
+    var helper =  CalculatorHelper.shared
     
     override func setUpWithError() throws {
-        let storyBoard = UIStoryboard(name: "Main", bundle: nil)
-        viewController = storyBoard.instantiateViewController(withIdentifier: "ViewController") as? ViewController
         
-        _ = viewController?.view
+//        let storyBoard = UIStoryboard(name: "Main", bundle: nil)
+//        viewController = storyBoard.instantiateViewController(withIdentifier: "ViewController") as? ViewController
+//        
+//        _ = viewController?.view
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        viewController = nil
     }
     
 
     //MARK: TEST FOR SIMPLE STRING
     func testSimpleAdditionWorking()
     {
-        viewController.stringInputField.text = "1,1"
-        var result : String!
-        viewController.helper.getResultAndShow(input: viewController.stringInputField.text!,tag: 1) { value, error in
-            result = value
-        }
-        XCTAssertEqual(result,"2")
+        runTestAndShowResult(input: "1,1", expectedError: nil, expected: "2", tag: 1)
     }
-    
+   
     //MARK: TEST FOR EMPTY STRING
     func testEmptyStringCase()
     {
-        viewController.stringInputField.text = ""
-        var result : String!
-        viewController.helper.getResultAndShow(input: viewController.stringInputField.text!,tag: 1) { value, error in
-            result = value
-        }
-        XCTAssertEqual(result,"0")
+        runTestAndShowResult(input: "", expectedError: nil, expected: "0", tag: 1)
     }
     
     //MARK: NEGATIVE NUMBER NOT ALLOWED CASE
-    func negativeNumberNotAllowedCase()
+    func testnegativeNumberNotAllowedCase()
     {
-        viewController.stringInputField.text = "-4,6;7;2"
-        var result : CalculatorErrorHandling!
-        viewController.helper.getResultAndShow(input: viewController.stringInputField.text!,tag: 1) { value, error in
-            result = error
-        }
-        XCTAssertEqual(result,.NegativeNumberNotAllowedError)
-    }
-    
-    //MARK: NEGATIVE NUMBER  ALLOWED CASE
-    func negativeNumberAllowedCase()
-    {
-        viewController.stringInputField.text = "-4,6;7;2"
-        var result : String!
-        viewController.helper.getResultAndShow(input: viewController.stringInputField.text!,tag: 1) { value, error in
-            result = value
-        }
-        XCTAssertEqual(result,"11")
+        runTestAndShowResult(input: "-4,6;7;2", expectedError: .NegativeNumberNotAllowedError, expected: "", tag: 1)
     }
     
     //MARK: NO NUMBER FOUND IN TEXTFIELD CASE
-    func noNumberFoundCase()
+    func testnoNumberFoundCase()
     {
-        viewController.stringInputField.text = "jdhfjkadsh"
-        var result : CalculatorErrorHandling!
-        viewController.helper.getResultAndShow(input: viewController.stringInputField.text!,tag: 1) { value, error in
-            result = error
-        }
-        XCTAssertEqual(result,.NoNumbersFoundError)
+        runTestAndShowResult(input: "jdhfjkadsh", expectedError: .NoNumbersFoundError, expected: "", tag: 1)
     }
     
     //MARK: OPERATOR NOT CHOOSING ERROR
-    func nooperatorSelectedCase()
+    func testnooperatorSelectedCase()
     {
-        viewController.stringInputField.text = "jdhfjkadsh"
-        var result : CalculatorErrorHandling!
-        viewController.helper.getResultAndShow(input: viewController.stringInputField.text!,tag: 0) { value, error in
-            result = error
-        }
-        XCTAssertEqual(result,.chooseOperatorError)
+        runTestAndShowResult(input: "-4,6;7;2", expectedError: .chooseOperatorError, expected: "", tag: 0)
     }
     
+    
+    func runTestAndShowResult(input:String,expectedError:CalculatorErrorHandling?,expected:String,tag:Int)
+    {
+        let expectation = self.expectation(description: "Test \(input) = \(expected)")
+            
+        helper.getResultAndShow(input: input,tag: tag) { value, error in
+            
+            error != nil ?  XCTAssertEqual( error,expectedError)  : XCTAssertEqual( value,expected)
+            expectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 2) { error in
+            if let error = error {
+                XCTFail("Timeout waiting for result: \(error)")
+            }
+        }
+    }
     
     func testPerformanceExample() throws {
         // This is an example of a performance test case.

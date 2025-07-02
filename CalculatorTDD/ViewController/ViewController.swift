@@ -35,28 +35,6 @@ class ViewController: UIViewController {
         
     }
 
-    //MARK: BASIC UI AND METHOD SETUP
-    func setUIAndMethod()
-    {
-        holderView.layer.cornerRadius = 10
-        topView.layer.cornerRadius = 10
-        
-        calculateButton.addCornerAndClip()
-        subtractButton.addCornerAndClip()
-        resetButton.addCornerAndClip()
-        equalButton.addCornerAndClip()
-        
-        stringInputField.tintColor = .white
-        stringInputField.becomeFirstResponder()
-        stringInputField.font = UIFont(name: "Digital-7", size: 30)
-        resultLabel.font = UIFont(name: "Digital-7", size: 30)
-        selectedOperatorLabel.font = UIFont(name: "Digital-7", size: 30)
-        self.negativeSwitch.isOn = defaultsHelper.isNegativeNumberEnabled() ?? false
-        self.negativeSwitch.addTarget(self, action: #selector(setNegativeSwitch), for: .valueChanged)
-        
-    }
-    
-    
     //MARK: BUTTON ACTIONS AND SHOW RESULT
     @IBAction func doMathAndShowResult(_ sender: UIButton) {
         
@@ -81,19 +59,24 @@ class ViewController: UIViewController {
     }
     
     @IBAction func resetButtonAction(_ sender: UIButton) {
+        clearFields()
+    }
+    
+    
+    func clearFields()
+    {
         self.stringInputField.text = ""
         self.resultLabel.text = ""
         self.selectedOperatorLabel.text = ""
+        self.tag = 0
     }
-    
     
     //MARK: ALERT CONTROLLER SHOWING ERROR FROM STRING AND OTHER PROCESS
     func showAlertController(message: String)
     {
         let alert = UIAlertController(title: "Error", message:message, preferredStyle: .alert)
         let action = UIAlertAction(title: "Okay", style: .default) { action in
-            self.stringInputField.text = ""
-            self.resultLabel.text = ""
+            self.clearFields()
         }
         
         alert.addAction(action)
@@ -111,16 +94,31 @@ class ViewController: UIViewController {
 
 }
 
+extension ViewController
+{
+    //MARK: BASIC UI AND METHOD SETUP
+    func setUIAndMethod()
+    {
+        holderView.layer.cornerRadius = 10
+        topView.layer.cornerRadius = 10
+        
+        calculateButton.addCornerAndClip()
+        subtractButton.addCornerAndClip()
+        resetButton.addCornerAndClip()
+        equalButton.addCornerAndClip()
+        
+        stringInputField.tintColor = .white
+        stringInputField.becomeFirstResponder()
+        stringInputField.font = UIFont(name: "Digital-7", size: 30)
+        resultLabel.font = UIFont(name: "Digital-7", size: 30)
+        selectedOperatorLabel.font = UIFont(name: "Digital-7", size: 30)
+        self.negativeSwitch.isOn = defaultsHelper.isNegativeNumberEnabled() ?? false
+        self.negativeSwitch.addTarget(self, action: #selector(setNegativeSwitch), for: .valueChanged)
+        
+    }
+}
 
 extension UIView {
-
-    func dropShadow(shadowColor: CGColor) {
-      self.layer.shadowColor = shadowColor
-      self.layer.shadowOpacity = 1
-      self.layer.shadowOffset = CGSize.zero
-      self.layer.shadowRadius = 3
-  }
-    
     func addCornerAndClip()
     {
         self.layer.cornerRadius = self.frame.size.height/2
